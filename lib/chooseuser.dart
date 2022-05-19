@@ -1,6 +1,6 @@
 import 'package:adobe_xd/adobe_xd.dart';
-import 'package:coding_for_child/child_login_screen.dart';
-import 'package:coding_for_child/teacher_login_screen.dart';
+import 'package:coding_for_child/register/child%20register/child_login_screen.dart';
+import 'package:coding_for_child/register/child%20register/teacher_login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:adobe_xd/pinned.dart';
 

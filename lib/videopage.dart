@@ -1,8 +1,10 @@
 import 'package:coding_for_child/buypage.dart';
 import 'package:coding_for_child/exampage.dart';
 import 'package:coding_for_child/main_reusable_component.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+
 
 class vedeopage extends StatefulWidget {
   @override
@@ -12,18 +14,25 @@ class vedeopage extends StatefulWidget {
 class _vedeopageState extends State<vedeopage> {
   dynamic coursename = 'Course name';
   dynamic videonumber = 1;
-  late VideoPlayerController controller ;
+  late VideoPlayerController controller;
+
   @override
   void initState() {
-    // TODO: implement initState
+    loadVideoPlayer();
     super.initState();
-    controller = VideoPlayerController.asset('assets/videos/')..initialize().then((value) =>
-    {
-     setState(() {
-
-    })
-    });
   }
+
+  loadVideoPlayer(){
+    controller = VideoPlayerController.network('https://www.fluttercampus.com/video.mp4');
+    controller.addListener(() {
+      setState(() {});
+    });
+    controller.initialize().then((value){
+      setState(() {});
+    });
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,34 +65,66 @@ leadingWidth: 3,
           children: [
             Padding(
               padding: EdgeInsets.all(5),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.white,
-                ),
-                width: double.infinity,
-                height: 250,
-                child:
-                ListView(
-                  children: [
-                    Center(
-                      child: controller.value.isInitialized?
-                     AspectRatio(child:VideoPlayer(controller), aspectRatio : controller.value.aspectRatio,): Container() ,
+              child:  Container(
 
-                    ),
-                    Row(
-                      children: [
-                        ElevatedButton(onPressed: (){
-                          controller.play();
-                        }, child:Icon(Icons.play_arrow) ),
-                        ElevatedButton(onPressed: (){
-                          controller.pause();
-                        }, child:Icon(Icons.pause) )
-                      ],
-                    )
-                  ],
-                ),
 
+                  child: Column(
+                      children:[
+                        AspectRatio(
+                          aspectRatio: controller.value.aspectRatio,
+                          child: VideoPlayer(controller),
+                        ),
+
+                        Container( //duration of video
+                          child: Text("Total Duration: " + controller.value.duration.toString()),
+                        ),
+
+                        Container(
+
+                            child: VideoProgressIndicator(
+                                controller,
+                                allowScrubbing: true,
+                                colors:VideoProgressColors(
+                                  backgroundColor: Colors.redAccent,
+                                  playedColor: Colors.green,
+                                  bufferedColor: Colors.purple,
+                                )
+                            )
+                        ),
+
+                        Container(
+                          child: Row(
+                            children: [
+                              IconButton(
+                                  onPressed: (){
+                                    if(controller.value.isPlaying){
+                                      controller.pause();
+                                    }else{
+                                      controller.play();
+                                    }
+
+                                    setState(() {
+
+                                    });
+                                  },
+                                  icon:Icon(controller.value.isPlaying?Icons.pause:Icons.play_arrow)
+                              ),
+
+                              IconButton(
+                                  onPressed: (){
+                                    controller.seekTo(Duration(seconds: 0));
+
+                                    setState(() {
+
+                                    });
+                                  },
+                                  icon:Icon(Icons.stop)
+                              )
+                            ],
+                          ),
+                        )
+                      ]
+                  )
               ),
             ),
 

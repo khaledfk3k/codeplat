@@ -1,3 +1,7 @@
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:coding_for_child/chat_system.dart';
+import 'package:coding_for_child/class_model/class_model.dart';
 import 'package:flutter/material.dart';
 
 class profilepage extends StatefulWidget {
@@ -18,6 +22,8 @@ class _profilepageState extends State<profilepage> {
     dynamic commentdata = 'comment';
     dynamic flaticontwo = Icons.star;
     double flaticontwosize = 22;
+    final Stream<QuerySnapshot> users = FirebaseFirestore.instance.collection('users').snapshots();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xffe0afa0),
@@ -28,13 +34,23 @@ class _profilepageState extends State<profilepage> {
             color: Colors.black,
           ),
         ),
+        title: Text("Profile",style: TextStyle(
+            fontSize: 22, fontWeight: FontWeight.bold,color: Colors.black),
+        ),
         actions: [
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 10),
             child: IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => chating(),
+                  ),
+                );
+              },
               icon: Icon(
-                Icons.menu,
+                Icons.chat,
                 color: Colors.black,
               ),
             ),
@@ -53,105 +69,123 @@ class _profilepageState extends State<profilepage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Padding(
-                    padding: EdgeInsets.all(5),
-                    child: CircleAvatar(
-                      radius: 50,
-                      backgroundImage:
-                          AssetImage('assets/images/profile_1.jpg'),
-                    ),
-                  ),
+
                   Padding(
                     padding: EdgeInsets.all(5),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        FlatButton(
+                        MaterialButton(
                           onPressed: () {},
-                          child: CircleAvatar(
-                              radius: 25,
-                              backgroundColor: Colors.white,
-                              child: Icon(
-                                Icons.facebook_rounded,
-                                color: Colors.black,
-                              )),
-                        ),
-                        SizedBox(
-                          width: 50,
-                        ),
-                        FlatButton(
-                          onPressed: () {},
-                          child: CircleAvatar(
-                            radius: 25,
-                            backgroundImage:
-                                AssetImage('assets/images/what.jpg'),
+                          child:  CircleAvatar(
+                            radius: 55,
+                            child:
+                            StreamBuilder<QuerySnapshot> (stream: users,builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot)
+                              {
+                                if(snapshot.hasError)
+                                  {
+                                    return Text("wrong");
+                                  }
+                                if(snapshot.connectionState == ConnectionState.waiting)
+                                {
+                                  return Text("done");
+                                }
+                                final data = snapshot.requireData;
+                                return ListView.builder(
+                                  itemCount: data.size,
+                                  itemBuilder: (context,index){
+                                   return Text("ok ${data.docs[index]['image']}");
+                                  },
+                                );
+                              }
+                              ,)
                           ),
                         ),
+
+                        Expanded(child:Padding(
+                          padding: EdgeInsets.all(0),
+                          child: Container(
+
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(flatBorderRadius1),
+                              color: Colors.white,
+                            ),
+                            width: double.infinity,
+
+                            child:  Padding(
+                              padding: EdgeInsets.all(10),
+                              child:Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.all(0),
+                                  child: Text(
+                                    name,
+                                    style: TextStyle(
+                                        fontSize: 19, fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.all(0),
+                                  child: Text(
+                                    email,
+                                    style: TextStyle(
+                                        fontSize: 19, fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.all(0),
+                                  child: Text(
+                                    phone,
+                                    style: TextStyle(
+                                        fontSize: 19, fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.all(0),
+                                  child: Text(
+                                    age,
+                                    style: TextStyle(
+                                        fontSize: 19, fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+
+                              ],
+                            ),),
+                          ),
+                        ), ),
                       ],
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.all(7),
+                    padding: EdgeInsets.all(0),
                     child: Container(
+                      alignment: Alignment.center,
+height: 100,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(flatBorderRadius1),
+                        borderRadius: BorderRadius.circular(30),
                         color: Colors.white,
                       ),
                       width: double.infinity,
-                      height: 254,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.all(7),
-                            child: Text(
-                              name,
-                              style: TextStyle(
-                                  fontSize: 22, fontWeight: FontWeight.bold),
+
+                      child:  Padding(
+                        padding: EdgeInsets.all(20),
+                        child:Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.all(0),
+                              child: Text(
+                                'write your bio',
+                                style: TextStyle(
+                                    fontSize: 19, fontWeight: FontWeight.bold),
+                              ),
                             ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(7),
-                            child: Text(
-                              email,
-                              style: TextStyle(
-                                  fontSize: 22, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(7),
-                            child: Text(
-                              phone,
-                              style: TextStyle(
-                                  fontSize: 22, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(7),
-                            child: Text(
-                              age,
-                              style: TextStyle(
-                                  fontSize: 22, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(7),
-                            child: Text(
-                              experience,
-                              style: TextStyle(
-                                  fontSize: 22, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(7),
-                            child: Text(
-                              skilla,
-                              style: TextStyle(
-                                  fontSize: 22, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ],
-                      ),
+
+
+                          ],
+                        ),),
                     ),
                   ),
                   Padding(
@@ -162,7 +196,7 @@ class _profilepageState extends State<profilepage> {
                         color: Colors.white,
                       ),
                       width: double.infinity,
-                      child: Column(
+                      child: SingleChildScrollView(child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
@@ -525,7 +559,7 @@ class _profilepageState extends State<profilepage> {
                             ),
                           )
                         ],
-                      ),
+                      ),),
                     ),
                   ),
                 ],

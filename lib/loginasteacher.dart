@@ -1,24 +1,17 @@
-import 'package:coding_for_child/child_home_page.dart';
-import 'package:coding_for_child/childhomelayout.dart';
-import 'package:coding_for_child/cubit/cubit.dart';
-import 'package:coding_for_child/cubit/states.dart';
-import 'package:coding_for_child/forgetpasswordscreen.dart';
-import 'package:coding_for_child/homepage.dart';
-import 'package:coding_for_child/loginasteacher.dart';
-import 'package:coding_for_child/network/cache_helper.dart';
-import 'package:coding_for_child/teacher_home_page.dart';
 import 'package:coding_for_child/teacherhomelayout.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-class loginescreenone extends StatefulWidget {
+import 'forgetpasswordscreen.dart';
+import 'homepage.dart';
+
+class loginteacher extends StatefulWidget {
+
   @override
-  _loginescreenoneState createState() => _loginescreenoneState();
+  State<loginteacher> createState() => _loginteacherState();
 }
 
-class _loginescreenoneState extends State<loginescreenone> {
+class _loginteacherState extends State<loginteacher> {
   static Future<User?> loginUsingEmailPassword({required String email, required String password , required BuildContext context})
   async {
     FirebaseAuth auth = FirebaseAuth.instance;
@@ -55,18 +48,6 @@ class _loginescreenoneState extends State<loginescreenone> {
           },
           color: Colors.black,
         ),
-        actions: [Padding(
-          padding: const EdgeInsets.all(10.0),child: Container(decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: Color(0xffe0afa0),
-        ),child: TextButton(onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => loginteacher(),
-            ),
-          );
-        }, child: Text(" Teacher ",style: TextStyle(color:Colors.black,fontSize: 17 ),),),),),],
         elevation: 0,
       ),
       body: Container(
@@ -146,7 +127,7 @@ class _loginescreenoneState extends State<loginescreenone> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>homelayout (),
+                                builder: (context) =>teacherhomelayout (),
                               ),
                             );
                           }
@@ -190,4 +171,3 @@ class _loginescreenoneState extends State<loginescreenone> {
     );
   }
 }
-

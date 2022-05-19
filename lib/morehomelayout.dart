@@ -1,4 +1,5 @@
 import 'package:coding_for_child/aboutus.dart';
+import 'package:coding_for_child/chat_system.dart';
 import 'package:coding_for_child/profilepage.dart';
 import 'package:flutter/material.dart';
 
@@ -63,7 +64,12 @@ class _morelayoutState extends State<morelayout> {
                           ))
                   ), ),
                   SizedBox(height: 10,),
-                  FlatButton(onPressed: (){}, child:Container(width: double.infinity,
+                  FlatButton(onPressed: (){Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => chating(),
+                    ),
+                  );}, child:Container(width: double.infinity,
                       height: 70,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(

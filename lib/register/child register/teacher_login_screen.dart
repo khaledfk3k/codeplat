@@ -1,10 +1,19 @@
 import 'package:adobe_xd/pinned.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:coding_for_child/loginscreenone.dart';
+
+
 import 'package:coding_for_child/teacher_home_page.dart';
 import 'package:coding_for_child/teacherhomelayout.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../childhomelayout.dart';
 
 class teacherloginscreen extends StatefulWidget {
+
   @override
   _teacherloginscreenState createState() => _teacherloginscreenState();
 }
@@ -15,8 +24,11 @@ class _teacherloginscreenState extends State<teacherloginscreen> {
   var passwordcontroller = TextEditingController();
   var phonecontroller = TextEditingController();
   var agecontroller = TextEditingController();
+  var imagecontroller = TextEditingController();
   var formkey = GlobalKey<FormState>();
-  var experiancecontrooller = TextEditingController();
+  final _firebaseAuth = FirebaseAuth.instance;
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +41,8 @@ class _teacherloginscreenState extends State<teacherloginscreen> {
               child: Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: const AssetImage('assets/images/sign_in_2.jpg'),
+                    image:
+                    const AssetImage('assets/images/sign_in_2.jpg'),
                     fit: BoxFit.fill,
                   ),
                   borderRadius: BorderRadius.circular(313.0),
@@ -57,7 +70,8 @@ class _teacherloginscreenState extends State<teacherloginscreen> {
               child: Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: const AssetImage('assets/images/sign_in_1.jpg'),
+                    image:
+                    const AssetImage('assets/images/sign_in_1.jpg'),
                     fit: BoxFit.fill,
                   ),
                   borderRadius: BorderRadius.circular(147.0),
@@ -108,7 +122,7 @@ class _teacherloginscreenState extends State<teacherloginscreen> {
                                       TextFormField(
                                         controller: emailcontroller,
                                         keyboardType:
-                                            TextInputType.emailAddress,
+                                        TextInputType.emailAddress,
                                         onFieldSubmitted: (value) {
                                           print(value);
                                         },
@@ -132,7 +146,7 @@ class _teacherloginscreenState extends State<teacherloginscreen> {
                                         controller: passwordcontroller,
                                         obscureText: true,
                                         keyboardType:
-                                            TextInputType.visiblePassword,
+                                        TextInputType.visiblePassword,
                                         onFieldSubmitted: (value) {
                                           print(value);
                                         },
@@ -176,7 +190,8 @@ class _teacherloginscreenState extends State<teacherloginscreen> {
                                       ),
                                       TextFormField(
                                         controller: agecontroller,
-                                        keyboardType: TextInputType.number,
+                                        keyboardType:
+                                        TextInputType.number,
                                         onFieldSubmitted: (value) {
                                           print(value);
                                         },
@@ -194,27 +209,6 @@ class _teacherloginscreenState extends State<teacherloginscreen> {
                                             )),
                                       ),
                                       SizedBox(
-                                        height: 10,
-                                      ),
-                                      TextFormField(
-                                        controller: experiancecontrooller,
-                                        onFieldSubmitted: (value) {
-                                          print(value);
-                                        },
-                                        validator: (value) {
-                                          if (value!.isEmpty) {
-                                            return ('experiance text must be not empty');
-                                          }
-                                          return null;
-                                        },
-                                        decoration: InputDecoration(
-                                            labelText: 'Experiance',
-                                            border: OutlineInputBorder(),
-                                            prefixIcon: Icon(
-                                              Icons.text_snippet_outlined,
-                                            )),
-                                      ),
-                                      SizedBox(
                                         height: 20,
                                       ),
                                       Container(
@@ -223,15 +217,29 @@ class _teacherloginscreenState extends State<teacherloginscreen> {
                                         width: double.infinity,
                                         child: MaterialButton(
                                           onPressed: () {
-                                            if (formkey.currentState!
-                                                .validate()) {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      teacherhomelayout(),
-                                                ),
-                                              );
+                                            if (formkey.currentState!.validate()) {
+                                             _firebaseAuth.createUserWithEmailAndPassword(email: emailcontroller.text, password: passwordcontroller.text,)
+                                             .then((value) {
+                                               FirebaseFirestore.instance.collection('userdata').doc(value.user!.uid).set(
+                                                   {"email": value.user!.email,
+                                                     "name": namecontroller.text,
+                                                     "phone":phonecontroller.text,
+                                                     "password":passwordcontroller.text,
+                                                     "age": agecontroller.text,
+                                                     "image" : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXu2uNVbiLmM0m0GWSChzyE4Z-2r3KQ4eJcQ&usqp=CAU",
+
+                                                   });
+
+                                               Navigator.push(
+                                                 context,
+                                                 MaterialPageRoute(
+                                                   builder: (context) =>teacherhomelayout (),
+                                                 ),
+                                               );
+                                             }).catchError((onErro){print(onErro.toString());});
+
+                                            }else{
+                                              print('ok');
                                             }
                                           },
                                           child: Text('SIGN IN'),
@@ -242,16 +250,7 @@ class _teacherloginscreenState extends State<teacherloginscreen> {
                                         color: Colors.white,
                                         child: MaterialButton(
                                           onPressed: () {
-                                            if (formkey.currentState!
-                                                .validate()) {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      loginescreenone(),
-                                                ),
-                                              );
-                                            }
+
                                           },
                                           child: Text(
                                             'log in',
